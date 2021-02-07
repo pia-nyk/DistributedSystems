@@ -34,14 +34,14 @@ public class Server {
             System.out.println("Waiting for client conn");
 
         } catch (Exception e) {
-            System.out.println("Exception occured while initializing server " + e.getMessage());
+            System.out.println("Exception occurred while initializing server " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) throws Exception{
         Server server = new Server(5000);
-        Thread[] threads = new Thread[2];
+        Thread[] threads = new Thread[server.iterations];
         try {
             //keep on looping for incoming client connections
             int k = 0;
@@ -61,9 +61,11 @@ public class Server {
                 threads[k].start();
             }
 
+            //wait for all threads to finish before exiting main thread
             System.out.println("Waiting for clients to finish");
-            threads[0].join();
-            threads[1].join();
+            for (Thread t: threads){
+                t.join();
+            }
 
         } catch (Exception e) {
             System.out.println("Exception occurred while reading/writing to the client " + e.getMessage());
