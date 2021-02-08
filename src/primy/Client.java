@@ -1,42 +1,76 @@
 package primy;
 
+import primy.helpers.ClientWorkingData;
+
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Client {
 
+    private ClientWorkingData wData;
+
     //initialize conn of client with server
-    public Client(String address, int port) {
+    public Client(String address, int port) throws Exception{
+        Socket socket = null;
+        DataInputStream in = null;
+        DataOutputStream out = null;
         try {
-            Socket socket = new Socket(address, port);
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            socket = new Socket(address, port);
+            in = new DataInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
 
             //read incoming data from server - both number from client and large number
             int N = Integer.valueOf(in.readUTF());
-            int K = Integer.valueOf(in.readUTF());
-            System.out.println("Numbers received from server - ClientNum " + N + " largeNum: " + K);
-            boolean ans = this.fermatAlgo(N, K);
+            System.out.println(N);
 
-            //send ans to server
-            out.writeUTF(String.valueOf(ans));
+            while (N > 0) {
+                String temp = in.readUTF();
 
-            Thread.sleep(10000);
-            socket.close();
-            in.close();
-            out.close();
+                //data preprocessing
+                //todo: use json instead
+                temp = temp.replace('}', ' ');
+                temp = temp.replace('{', ' ');
+                temp = temp.trim();
 
+                System.out.println(temp);
+                Map<String, String> hMapData = Arrays.stream(temp.split(","))
+                        .map(s -> s.split(":"))
+                        .collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].trim()));
+
+                System.out.println("Numbers received from server - ClientNum " + hMapData.get("clientNum") + " largeNum: " + hMapData.get("largeNum"));
+                int ans = (int) this.fermatAlgo(Integer.valueOf(hMapData.get("clientNum"))
+                        , Integer.valueOf(hMapData.get("largeNum")),
+                        Integer.valueOf(hMapData.get("power")));
+                System.out.println("Answer calculated by client : " + ans);
+
+                //send ans to server
+                out.writeUTF(String.valueOf(ans));
+
+                Thread.sleep(10000);
+                N--;
+            }
+
+        } catch (ConnectException ce){
+            System.out.println("Server not ready for connection. Please try later! " + ce.getMessage());
         } catch (Exception e) {
             System.out.println("Exception occurred while connecting to server " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            socket.close();
+            in.close();
+            out.close();
         }
     }
 
-    public boolean fermatAlgo (int N, int K) {
-        return Math.pow(N, K-1) % K == 1;
+    public double fermatAlgo (int N, int K, int pow) {
+        return ((int)Math.pow(N, pow)) % K;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         Client client = new Client("127.0.0.1", 5000);
     }
 }
