@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Server code for checking primality of large numbers
@@ -22,7 +23,7 @@ public class Server {
     private BufferedReader termIn = null;
     private BigInteger largeNum;
     private final int clients = 2;
-    private final int iterations = 3;
+    private final int iterations = 10;
     private List<ConnectionInfo> connectionInfos = new ArrayList<>();
     private ClientResult clientResult;
 
@@ -71,10 +72,8 @@ public class Server {
             while(k < s.iterations) {
 
                 s.clientResult = new ClientResult();
-                BigInteger clientNum = s.largeNum.subtract(new BigInteger("4"))
-                        .add(new BigInteger("2")).multiply(new BigInteger(
-                                String.valueOf(Math.random())));
-
+                Random rand = new Random();
+                BigInteger clientNum = new BigInteger(s.largeNum.intValue() - 4, rand).add(new BigInteger("2"));
                 BigInteger power = s.largeNum.subtract(new BigInteger("1")).divide(new BigInteger("2"));
 
                 //create data objs to be passed onto clients
