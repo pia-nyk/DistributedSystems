@@ -6,6 +6,7 @@ import primy.helpers.ClientWorkingData;
 import primy.helpers.ConnectionInfo;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class Server {
 
     private ServerSocket server = null;
     private BufferedReader termIn = null;
-    private int largeNum;
+    private BigInteger largeNum;
     private final int clients = 2;
     private final int iterations = 3;
     private List<ConnectionInfo> connectionInfos = new ArrayList<>();
@@ -33,7 +34,7 @@ public class Server {
             termIn = new BufferedReader(new InputStreamReader(System.in));
 
             //take the large number i/p from user
-            this.largeNum = Integer.valueOf(termIn.readLine());
+            this.largeNum = new BigInteger(termIn.readLine());
             System.out.println("Integer choosen by server: " + this.largeNum);
 
             server = new ServerSocket(port);
@@ -70,10 +71,11 @@ public class Server {
             while(k < s.iterations) {
 
                 s.clientResult = new ClientResult();
-                int clientNum = (int) (Math.random() * (s.largeNum-4) + 2);
-                int power = 0;
-                //if largeNum-1 is even = always except 2
-                power = (s.largeNum-1)/2;
+                BigInteger clientNum = s.largeNum.subtract(new BigInteger("4"))
+                        .add(new BigInteger("2")).multiply(new BigInteger(
+                                String.valueOf(Math.random())));
+
+                BigInteger power = s.largeNum.subtract(new BigInteger("1")).divide(new BigInteger("2"));
 
                 //create data objs to be passed onto clients
                 ClientWorkingData wDataClient1 = new ClientWorkingData(clientNum, s.largeNum, power);
@@ -95,7 +97,7 @@ public class Server {
                 //calculate the final ans
                 //formula: (a*b) mod m = ((a mod m) * (b mod m)) mod m
                 System.out.println("Multiplication ans " + s.clientResult.get());
-                finalAns = finalAns & (s.clientResult.get() % s.largeNum) == 1;
+                finalAns = finalAns & (s.clientResult.get().mod(s.largeNum).intValue()) == 1;
             }
             System.out.println("The number " + s.largeNum + " is a " +
                     (finalAns ? "prime" : "not prime"));

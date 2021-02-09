@@ -44,9 +44,9 @@ public class Client {
 
                 System.out.println("Numbers received from server - ClientNum " + hMapData.get("clientNum") + " largeNum: " + hMapData.get("largeNum")
                 + " power " + hMapData.get("power"));
-                int ans = (int) this.fermatAlgo(Integer.valueOf(hMapData.get("clientNum"))
-                        , Integer.valueOf(hMapData.get("largeNum")),
-                        Integer.valueOf(hMapData.get("power")));
+                BigInteger ans =  this.fermatAlgo(new BigInteger(hMapData.get("clientNum"))
+                        , new BigInteger(hMapData.get("largeNum")),
+                        new BigInteger(hMapData.get("power")));
                 System.out.println("Answer calculated by client : " + ans);
 
                 //send ans to server
@@ -68,8 +68,8 @@ public class Client {
         }
     }
 
-    public BigInteger fermatAlgo (int N, int K, int pow) {
-        return ((BigInteger)Math.pow(N, pow)) % K;
+    public BigInteger fermatAlgo (BigInteger N, BigInteger K, BigInteger pow) {
+        return N.modPow(pow, K);
     }
 
     public static void main(String[] args) throws Exception{

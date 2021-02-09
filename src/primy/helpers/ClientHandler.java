@@ -1,6 +1,7 @@
 package primy.helpers;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 /**
  * handler for each client connected
@@ -32,7 +33,7 @@ public class ClientHandler extends Thread{
 
             cInfo.getClos().writeUTF(wData.toString());
             //get the results back from client
-            int ans = Integer.valueOf(cInfo.getClis().readUTF());
+            BigInteger ans = new BigInteger(cInfo.getClis().readUTF());
 
             synchronized (this.clientResult) {
                 this.clientResult.update(ans);

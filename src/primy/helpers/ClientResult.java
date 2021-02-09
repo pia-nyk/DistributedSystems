@@ -1,10 +1,12 @@
 package primy.helpers;
 
+import java.math.BigInteger;
+
 public class ClientResult {
-    private int result = 1;
+    private BigInteger result = new BigInteger("1");
     //this method uses synchronized block
-    public void update(int val) {
-        this.result = this.result * val;
+    public void update(BigInteger val) {
+        this.result = this.result.multiply(val);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -12,7 +14,7 @@ public class ClientResult {
         }
     }
 
-    public int get () {
+    public BigInteger get () {
         return result;
     }
 

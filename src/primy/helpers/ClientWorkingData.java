@@ -1,40 +1,42 @@
 package primy.helpers;
 
+import java.math.BigInteger;
+
 /**
  * data to be passed to the clients for primality check
  */
 public class ClientWorkingData {
-    private int clientNum;
-    private int largeNum;
-    private int power;
+    private BigInteger clientNum;
+    private BigInteger largeNum;
+    private BigInteger power;
 
-    public ClientWorkingData(int clientNum, int largeNum, int power) {
+    public ClientWorkingData(BigInteger clientNum, BigInteger largeNum, BigInteger power) {
         this.clientNum = clientNum;
         this.largeNum = largeNum;
         this.power = power;
     }
 
-    public int getClientNum() {
+    public BigInteger getClientNum() {
         return clientNum;
     }
 
-    public void setClientNum(int clientNum) {
+    public void setClientNum(BigInteger clientNum) {
         this.clientNum = clientNum;
     }
 
-    public int getLargeNum() {
+    public BigInteger getLargeNum() {
         return largeNum;
     }
 
-    public void setLargeNum(int largeNum) {
+    public void setLargeNum(BigInteger largeNum) {
         this.largeNum = largeNum;
     }
 
-    public int getPower() {
+    public BigInteger getPower() {
         return power;
     }
 
-    public void setPower(int power) {
+    public void setPower(BigInteger power) {
         this.power = power;
     }
 
