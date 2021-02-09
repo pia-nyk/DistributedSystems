@@ -1,6 +1,7 @@
 package primy;
 
 import primy.helpers.ClientHandler;
+import primy.helpers.ClientResult;
 import primy.helpers.ClientWorkingData;
 import primy.helpers.ConnectionInfo;
 
@@ -20,8 +21,9 @@ public class Server {
     private BufferedReader termIn = null;
     private int largeNum;
     private final int clients = 2;
-    private final int iterations = 10;
+    private final int iterations = 3;
     private List<ConnectionInfo> connectionInfos = new ArrayList<>();
+    private ClientResult clientResult;
 
     //starts the server and waits for client conn
     public Server(int port) {
@@ -64,29 +66,24 @@ public class Server {
 
             //send data to each client
             k = 0;
+            boolean finalAns = true;
             while(k < s.iterations) {
 
+                s.clientResult = new ClientResult();
                 int clientNum = (int) (Math.random() * (s.largeNum-4) + 2);
-                int power1 = 0;
-                int power2 = 0;
-                //if largeNum-1 is even
-                if((s.largeNum-1)%2 == 0) {
-                    power1 = (s.largeNum-1)/2;
-                    power2 = (s.largeNum-1)/2;
+                int power = 0;
+                //if largeNum-1 is even = always except 2
+                power = (s.largeNum-1)/2;
 
-                } else {
-                    power1 = s.largeNum-1;
-                    power2 = 1;
-                }
                 //create data objs to be passed onto clients
-                ClientWorkingData wDataClient1 = new ClientWorkingData(clientNum, s.largeNum, power1);
-                ClientWorkingData wDataClient2 = new ClientWorkingData(clientNum, s.largeNum, power2);
+                ClientWorkingData wDataClient1 = new ClientWorkingData(clientNum, s.largeNum, power);
+                ClientWorkingData wDataClient2 = new ClientWorkingData(clientNum, s.largeNum, power);
 
                 //create worker threads for each client and send the data resp
-                threads[0] = new ClientHandler(wDataClient1, s.connectionInfos.get(0), s.iterations);
+                threads[0] = new ClientHandler(wDataClient1, s.connectionInfos.get(0), s.iterations, s.clientResult);
                 threads[0].start();
 
-                threads[1] = new ClientHandler(wDataClient2, s.connectionInfos.get(1), s.iterations);
+                threads[1] = new ClientHandler(wDataClient2, s.connectionInfos.get(1), s.iterations, s.clientResult);
                 threads[1].start();
                 k++;
 
@@ -95,7 +92,13 @@ public class Server {
                 for (Thread t: threads){
                     t.join();
                 }
+                //calculate the final ans
+                //formula: (a*b) mod m = ((a mod m) * (b mod m)) mod m
+                System.out.println("Multiplication ans " + s.clientResult.get());
+                finalAns = finalAns & (s.clientResult.get() % s.largeNum) == 1;
             }
+            System.out.println("The number " + s.largeNum + " is a " +
+                    (finalAns ? "prime" : "not prime"));
 
         } catch (Exception e) {
             System.out.println("Exception occurred while connecting to clients " + e.getMessage());

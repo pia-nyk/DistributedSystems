@@ -3,6 +3,7 @@ package primy;
 import primy.helpers.ClientWorkingData;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Arrays;
@@ -41,7 +42,8 @@ public class Client {
                         .map(s -> s.split(":"))
                         .collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].trim()));
 
-                System.out.println("Numbers received from server - ClientNum " + hMapData.get("clientNum") + " largeNum: " + hMapData.get("largeNum"));
+                System.out.println("Numbers received from server - ClientNum " + hMapData.get("clientNum") + " largeNum: " + hMapData.get("largeNum")
+                + " power " + hMapData.get("power"));
                 int ans = (int) this.fermatAlgo(Integer.valueOf(hMapData.get("clientNum"))
                         , Integer.valueOf(hMapData.get("largeNum")),
                         Integer.valueOf(hMapData.get("power")));
@@ -66,8 +68,8 @@ public class Client {
         }
     }
 
-    public double fermatAlgo (int N, int K, int pow) {
-        return ((int)Math.pow(N, pow)) % K;
+    public BigInteger fermatAlgo (int N, int K, int pow) {
+        return ((BigInteger)Math.pow(N, pow)) % K;
     }
 
     public static void main(String[] args) throws Exception{

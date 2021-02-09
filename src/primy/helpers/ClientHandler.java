@@ -9,15 +9,16 @@ import java.io.IOException;
 public class ClientHandler extends Thread{
     private ConnectionInfo cInfo;
     private ClientWorkingData wData;
-    private String result = "";
     private int iterations;
     private static int iterInfo = 0;
+    private ClientResult clientResult;
 
     //check primality of (clientNum^power % largeNum) on the clientside
-    public ClientHandler(ClientWorkingData wData, ConnectionInfo cInfo, int iterations) {
+    public ClientHandler(ClientWorkingData wData, ConnectionInfo cInfo, int iterations, ClientResult clientResult) {
         this.cInfo = cInfo;
         this.wData = wData;
         this.iterations = iterations;
+        this.clientResult = clientResult;
     }
     //this method will run on invoking thread.start()
     @Override
@@ -31,9 +32,11 @@ public class ClientHandler extends Thread{
 
             cInfo.getClos().writeUTF(wData.toString());
             //get the results back from client
-            this.result = cInfo.getClis().readUTF();
-            System.out.println("The number "  + this.wData.getLargeNum() + " is :" + this.result);
+            int ans = Integer.valueOf(cInfo.getClis().readUTF());
 
+            synchronized (this.clientResult) {
+                this.clientResult.update(ans);
+            }
 
         } catch (IOException e) {
             System.out.println("Exception while reading/writing to data " + e.getMessage());
