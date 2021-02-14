@@ -1,3 +1,4 @@
-*.iml
-.idea
+Rudy/*.iml
+Rudy/.idea/
 out
+Rudy/target/
