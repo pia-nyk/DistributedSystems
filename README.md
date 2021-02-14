@@ -8,3 +8,8 @@ The assignments are performed in Java as opposed to the recommended Erlang langu
 
 <h3>Primy</h3>
 Checking primality of large numbers with Fermat algorithm using multi-Client Server model. 
+
+<br/>
+
+<h3>Rudy</h3>
+Rudimentary HTTP server using Java servlets & Apache Tomcat application server
