@@ -12,4 +12,4 @@ Checking primality of large numbers with Fermat algorithm using multi-Client Ser
 <br/>
 
 <h3>Rudy</h3>
-Rudimentary HTTP server using Java servlets & Apache Tomcat application server
+Rudimentary HTTP server using Java servlet & Apache Tomcat application server for POST requests
