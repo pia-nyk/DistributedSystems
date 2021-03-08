@@ -1,6 +1,6 @@
 # DistributedSystems
 
-Distributed Systems assignments by Prof. Johan Montelius <br/>
+Distributed Systems Examples - Ideas taken from assignments by Prof. Johan Montelius <br/>
 <a href = "https://people.kth.se/~johanmon/dse.html">Please check out the assignments here</a>
 
 <br/>
