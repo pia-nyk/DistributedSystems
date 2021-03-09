@@ -1,6 +1,6 @@
 # DistributedSystems
 
-Distributed Systems assignments by Prof. Johan Montelius <br/>
+Distributed Systems Examples - Ideas taken from assignments by Prof. Johan Montelius <br/>
 <a href = "https://people.kth.se/~johanmon/dse.html">Please check out the assignments here</a>
 
 <br/>
@@ -12,4 +12,4 @@ Checking primality of large numbers with Fermat algorithm using multi-Client Ser
 <br/>
 
 <h3>Rudy</h3>
-Rudimentary HTTP server using Java servlets & Apache Tomcat application server
+Rudimentary HTTP server using Java servlet, JSP & Apache Tomcat application server for POST requests
