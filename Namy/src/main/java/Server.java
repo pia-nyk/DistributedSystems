@@ -1,25 +1,23 @@
 package main.java;
 
 import com.google.gson.Gson;
+import main.java.helperDTO.RequestObject;
 import main.java.helperDTO.ResponseObject;
 import main.java.helperDTO.Status;
 import main.java.helperDTO.SystemInfo;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Server {
     public List<SystemInfo> children;
-    Server parent = null;
+    //identity consists of the type of server & port number
     Map<String, String> identity = null;
     int timeToLive = 0;
     boolean host;
+    String hostname;
     String ip;
 
     //conn vars
@@ -30,6 +28,16 @@ public class Server {
         this.host = host;
         this.socket = new DatagramSocket(port);
         this.buffer = new byte[256];
+
+        //data whether the system is a server or host
+        //for recursor to make decision while iteration
+        identity = new HashMap<>();
+        String systemType = "server";
+        if(this.host) {
+            systemType = "host";
+        }
+        identity.put("type", systemType);
+        identity.put("port", String.valueOf(port));
     }
 
     /**
@@ -37,8 +45,11 @@ public class Server {
      * @param host
      * @param port
      */
-    public void register (InetAddress host, int port) {
-
+    public void register (InetAddress host, int port) throws IOException {
+        RequestObject requestObject = new RequestObject(hostname, ip, identity, true);
+        buffer = new Gson().toJson(requestObject).getBytes();
+        DatagramPacket request = new DatagramPacket(buffer, buffer.length, host, port);
+        socket.send(request);
     }
 
     /**
@@ -50,25 +61,50 @@ public class Server {
     public void lookUp(String hostname, DatagramPacket request) throws IOException {
         InetAddress senderAddress = request.getAddress();
         int senderPort = request.getPort();
-
+        ResponseObject obj = null;
         //if its the host, we are at the end of lookup line
         //send the ip of the current system
         if(this.host) {
             //create a response obj in proper format
-            ResponseObject obj = new ResponseObject(Status.OK, ip);
-            buffer = new Gson().toJson(obj).getBytes();
-            DatagramPacket response = new DatagramPacket(buffer,
-                    buffer.length, senderAddress, senderPort);
-            socket.send(response);
+            obj = new ResponseObject(Status.OK, ip, hostname, identity);
+        } else {
+            //check if hostname is a child of current system
+            for(SystemInfo child: children) {
+                if(hostname.equals(child.getHostname())) {
+                    obj = new ResponseObject(Status.OK, ip, child.getHostname(), child.getIdentity());
+                    break;
+                }
+            }
+            //if requested host info not in children
+            //return null
+            if(obj == null) {
+                obj = new ResponseObject(Status.UNKNOWN, null, null, null);
+            }
         }
+        buffer = new Gson().toJson(obj).getBytes();
+        DatagramPacket response = new DatagramPacket(buffer,
+                buffer.length, senderAddress, senderPort);
+        //send data to resolver
+        socket.send(response);
     }
 
     public static void main(String[] args) {
         try {
-            Server s = new Server(Boolean.getBoolean(args[1]), 17); //pass whether host or server while starting
+            Server s = new Server(Boolean.getBoolean(System.getProperty("isHost")),
+                    Integer.parseInt(System.getProperty("serverNo"))); //pass whether host or server while starting
+            InetAddress host = InetAddress.getByName(System.getProperty("hostname"));
+            int port = Integer.parseInt(System.getProperty("port"));
+
+            //send registration request to the parent
+            s.register(host, port);
 
         } catch (SocketException e) {
-            System.out.println("Cannot create a server on specified port " + e.getMessage());
+            System.out.println("Cannot create a server on specified port: " + e.getMessage());
+        } catch (UnknownHostException e) {
+            System.out.println("Parent host not found " + System.getProperty("hostname")
+                    + " Error: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Couldn't send registration request to parent: " + e.getMessage());
         }
     }
 

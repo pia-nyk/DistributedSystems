@@ -1,13 +1,12 @@
 package main.java;
 
+import com.google.gson.Gson;
+import main.java.helperDTO.RequestObject;
 import main.java.helperDTO.SystemInfo;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Map;
 
 public class RegistrationHelper implements Runnable{
 
@@ -26,35 +25,32 @@ public class RegistrationHelper implements Runnable{
      * or un-register request
      */
     public void processRequest() {
-        JSONObject entry = new JSONObject(new String(buffer));
-        String value = entry.get("shouldRegister").toString();
-        if(value != null && "true".equals(value)) {
-            registerServer(entry);
+        RequestObject requestObject = new Gson().fromJson(new String(buffer), RequestObject.class);
+        boolean shouldRegister = requestObject.isShouldRegister();
+        if(shouldRegister) {
+            registerServer(requestObject);
         } else {
-            unregisterServer(entry);
+            unregisterServer(requestObject);
         }
     }
 
     /**
      * get the systeminfo from jsonobject
      * and add to servers list
-     * @param o
+     * @param obj
      */
-    public void registerServer(JSONObject o) {
-        SystemInfo child = new SystemInfo(o.get("hostname").toString(),
-                Integer.parseInt(o.get("port").toString()),
-                o.get("ip").toString(),(Map<String, String>)o.get("identity"));
+    public void registerServer(RequestObject obj) {
+        SystemInfo child = new SystemInfo(obj.getHostname(), obj.getIp(), obj.getIdentity());
         s.children.add(child);
-
     }
 
     /**
      * find child using hostname and remove from
      * servers list
-     * @param o
+     * @param obj
      */
-    public void unregisterServer(JSONObject o) {
-        String hostname = o.get("hostname").toString();
+    public void unregisterServer(RequestObject obj) {
+        String hostname = obj.getHostname();
         for(SystemInfo child: s.children) {
             if(hostname.equals(child.getHostname())) {
                 s.children.remove(child);
