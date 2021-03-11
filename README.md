@@ -1,7 +1,6 @@
 # DistributedSystems
 
-Distributed Systems Examples - Ideas taken from assignments by Prof. Johan Montelius <br/>
-<a href = "https://people.kth.se/~johanmon/dse.html">Please check out the assignments here</a>
+Distributed Systems Examples - Ideas taken from <a href = "https://people.kth.se/~johanmon/dse.html"> assignments </a>. <br/>
 
 <br/>
 The assignments are performed in Java as opposed to the recommended Erlang language. 
