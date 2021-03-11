@@ -13,3 +13,8 @@ Checking primality of large numbers with Fermat algorithm using multi-Client Ser
 
 <h3>Rudy</h3>
 Rudimentary HTTP server using Java servlet, JSP & Apache Tomcat application server for POST requests
+
+<br/>
+
+<h3>Namy</h3>
+Distributed Name server like DNS in plain old Java
