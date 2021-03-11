@@ -1,15 +1,14 @@
 package main.java;
 
-import main.java.helpers.Reply;
-
+import main.java.helperDTO.CacheEntry;
+import main.java.helperDTO.ResponseObject;
 import java.util.List;
-import java.util.Map;
 
 public class Resolver {
 
     String domainName;
     List<String> domainNameParts;
-    Map<Map<String, String>, Integer> cache;
+    List<CacheEntry> cache;
 
     /**
      * initialize cache with root nameserver
@@ -24,7 +23,17 @@ public class Resolver {
      * @param domainName
      * @return
      */
-    public Reply resolve (String domainName) {
+    public ResponseObject resolve (String domainName) {
+
+    }
+
+    /**
+     * validates if the entry in cache is still valid
+     * based on timetolive
+     * @param time
+     * @return
+     */
+    public boolean checkValidCacheEntry (int time) {
 
     }
 
@@ -33,7 +42,7 @@ public class Resolver {
      * @param domainName
      * @return
      */
-    public Reply lookup (String domainName) {
+    public ResponseObject lookup (String domainName) {
 
     }
 }
