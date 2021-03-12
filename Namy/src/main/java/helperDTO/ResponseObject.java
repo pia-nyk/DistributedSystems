@@ -12,13 +12,15 @@ public class ResponseObject {
     String reply;
     String hostname;
     Map<String, String> identity;
+    long timeToLive;
 
     public ResponseObject(Status status, String reply,
-                          String hostname, Map<String, String> identity) {
+                          String hostname, Map<String, String> identity, long timeToLive) {
         this.status = status;
         this.reply = reply;
         this.hostname = hostname;
         this.identity = identity;
+        this.timeToLive = timeToLive;
     }
 }
 

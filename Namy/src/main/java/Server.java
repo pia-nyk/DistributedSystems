@@ -46,7 +46,7 @@ public class Server {
      * @param port
      */
     public void register (InetAddress host, int port) throws IOException {
-        RequestObject requestObject = new RequestObject(hostname, ip, identity, true);
+        RequestObject requestObject = new RequestObject(hostname, ip, identity, true, timeToLive);
         buffer = new Gson().toJson(requestObject).getBytes();
         DatagramPacket request = new DatagramPacket(buffer, buffer.length, host, port);
         socket.send(request);
@@ -66,19 +66,19 @@ public class Server {
         //send the ip of the current system
         if(this.host) {
             //create a response obj in proper format
-            obj = new ResponseObject(Status.OK, ip, hostname, identity);
+            obj = new ResponseObject(Status.OK, ip, hostname, identity, timeToLive);
         } else {
             //check if hostname is a child of current system
             for(SystemInfo child: children) {
                 if(hostname.equals(child.getHostname())) {
-                    obj = new ResponseObject(Status.OK, ip, child.getHostname(), child.getIdentity());
+                    obj = new ResponseObject(Status.OK, ip, child.getHostname(), child.getIdentity(), child.getTimeToLive());
                     break;
                 }
             }
             //if requested host info not in children
             //return null
             if(obj == null) {
-                obj = new ResponseObject(Status.UNKNOWN, null, null, null);
+                obj = new ResponseObject(Status.UNKNOWN, null, null, null, 0);
             }
         }
         buffer = new Gson().toJson(obj).getBytes();

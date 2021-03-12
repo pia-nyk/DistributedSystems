@@ -40,7 +40,7 @@ public class RegistrationHelper implements Runnable{
      * @param obj
      */
     public void registerServer(RequestObject obj) {
-        SystemInfo child = new SystemInfo(obj.getHostname(), obj.getIp(), obj.getIdentity());
+        SystemInfo child = new SystemInfo(obj.getHostname(), obj.getIp(), obj.getIdentity(), obj.getTimeToLive());
         s.children.add(child);
     }
 

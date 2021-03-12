@@ -11,9 +11,9 @@ public class CacheEntry {
     int port;
     String ip;
     long createdTime;
-    int timeToLive;
+    long timeToLive;
 
-    public CacheEntry(String domainName, String host, int port, String ip, long createdTime, int timeToLive) {
+    public CacheEntry(String domainName, String host, int port, String ip, long createdTime, long timeToLive) {
         this.domainName = domainName;
         this.host = host;
         this.port = port;

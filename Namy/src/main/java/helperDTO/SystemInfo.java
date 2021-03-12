@@ -12,10 +12,12 @@ public class SystemInfo {
     String hostname;
     String ip;
     Map<String, String> identity;
+    long timeToLive;
 
-    public SystemInfo(String hostname, String ip, Map<String, String> identity) {
+    public SystemInfo(String hostname, String ip, Map<String, String> identity, long timeToLive) {
         this.hostname = hostname;
         this.ip = ip;
         this.identity = identity;
+        this.timeToLive = timeToLive;
     }
 }
